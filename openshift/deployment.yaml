@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sre-platform
+  namespace: shreeyadav-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sre-platform
+  template:
+    metadata:
+      labels:
+        app: sre-platform
+    spec:
+      containers:
+        - name: sre-platform
+          image: shreelakshmid/openshift-sre-platform:v1
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
